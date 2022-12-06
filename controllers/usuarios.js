@@ -104,8 +104,12 @@ const deleteUsuarios = async (req = request, res = respose) => {
 
     const usuario = await Usuario.findByIdAndUpdate(id, estado);
 
+    //Para saber que podemos poner el usuario en el req en el middleware anterior
+    // const usuarioAuth = req.usuario;
+    // console.log(req.usuario);
+
     res.json({
-        usuario
+        usuario,
     });
 }
 

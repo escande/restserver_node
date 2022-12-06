@@ -7,6 +7,7 @@ class Server{
     constructor(){
         
         this.usuariosPath = '/api/usuarios';
+        this.authPath = '/api/auth';
         this.PORT = process.env.PORT || 3001;
         this.app = express();
 
@@ -40,6 +41,7 @@ class Server{
     routes(){
 
         //Es un middleware que usamos para cargar las rutas
+        this.app.use(this.authPath, require('../routes/auth'));
         this.app.use(this.usuariosPath, require('../routes/usuarios'));
 
     }

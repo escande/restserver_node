@@ -31,9 +31,9 @@ const existeEmail = async (email) => {
 const existeUsuarioId = async (id) => {
 
     //Verificar si el id ya existe
-    console.log(id);
+    //console.log(id);
     const existeId = await Usuario.findById(id);
-    console.log(existeId);
+    //console.log(existeId);
     if(!existeId){
 
         throw `El Id ${id} no existe`;

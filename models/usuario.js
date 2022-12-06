@@ -48,8 +48,11 @@ const usuarioSchema = Schema({
 //con esto quitamos lo que no queremos que aparezca y el resto es el usuarios sin los campos
 usuarioSchema.methods.toJSON = function(){
 
-    const {__v, password, ...usuario } = this.toObject();
+    const {__v, password, _id, ...usuario} = this.toObject();
 
+    //Recuerda que en JS se pueden crear más propiedades directamente desde el modelo
+    usuario.uid = _id;
+    //usuario.saludo = 'Hola mundo';
     return usuario;
 
 }
