@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 
 const Usuario = require('../models/usuario');
 const { generarJWT } = require('../helpers/generar-jwt');
+const { googleVerify } = require('../helpers/google-verify');
 
 const postLogin = async (req, res = respose) => {
 
@@ -54,7 +55,57 @@ const postLogin = async (req, res = respose) => {
     }
 }
 
+const googleSignIn = async (req, res = respose) => {
+
+    const {id_token} = req.body;
+
+    //try{
+
+        const {nombre, img, email} = await googleVerify(id_token);
+
+        let usuario = await Usuario.findOne({email});
+
+        if(!usuario){
+
+            //tengo que crearlo
+            const data = {
+                nombre,
+                email,
+                password: ':P',
+                img,
+                google: true
+            };
+
+            usuario = new Usuario(data);
+            await usuario.save();
+        }
+
+        //Si no esta activo en DB
+        if(!usuario.estado){
+
+            res.status(400).json({
+                msg: 'Usuario bloqueado, hable con el administrador'
+            });
+        }
+
+        //Generar el JWT
+        const token = await generarJWT(usuario.id, generarJWT);
+
+        res.json({
+           usuario,
+           token
+        });
+
+    // }catch (err){
+
+    //     res.status(400).json({
+    //         msg: err
+    //     });
+    // }
+}
+
 
 module.exports = {
     postLogin,
+    googleSignIn
 }
