@@ -6,8 +6,16 @@ class Server{
 
     constructor(){
         
-        this.usuariosPath = '/api/usuarios';
-        this.authPath = '/api/auth';
+        // this.usuariosPath = '/api/usuarios';
+        // this.authPath = '/api/auth';
+        // this.categoriasPath = '/api/categorias';
+
+        this.paths = {
+            usuarios : '/api/usuarios',
+            auth : '/api/auth',
+            categorias : '/api/categorias'
+        };
+
         this.PORT = process.env.PORT || 3001;
         this.app = express();
 
@@ -41,8 +49,9 @@ class Server{
     routes(){
 
         //Es un middleware que usamos para cargar las rutas
-        this.app.use(this.authPath, require('../routes/auth'));
-        this.app.use(this.usuariosPath, require('../routes/usuarios'));
+        this.app.use(this.paths.auth, require('../routes/auth'));
+        this.app.use(this.paths.usuarios, require('../routes/usuarios'));
+        this.app.use(this.paths.categorias, require('../routes/categorias'));
 
     }
 
