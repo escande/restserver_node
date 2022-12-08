@@ -1,6 +1,9 @@
-const Role = require('../models/role');
-const Usuario = require('../models/usuario');
-const Categoria = require('../models/categoria')
+// const Role = require('../models/role');
+// const Usuario = require('../models/usuario');
+// const Categoria = require('../models/categoria')
+//const mongoose = require('mongoose');
+
+const {Role, Usuario, Categoria, Producto} = require('../models/index');
 
 
 const esRoleValido = async (role = '') => {
@@ -44,13 +47,35 @@ const existeUsuarioId = async (id) => {
 
 const existeCategoria = async (id = '') => {
 
-    console.log(id);
-    const existeCategoria = await Categoria.findById(id);
-    //console.log(existeCategoria);
+    //console.log(id);
+    try{
+        const existeCategoria = await Categoria.findById(id);
+        //console.log(existeCategoria);
 
-    if(!existeCategoria){
+        if(!existeCategoria){
 
+            throw `La categoria con ID: ${id} no está registrado en la DB`;
+        }
+
+    }catch (err){
         throw `La categoria con ID: ${id} no está registrado en la DB`;
+    }
+}
+
+const existeProducto = async (id = '') => {
+
+    try{
+        console.log(id);
+        //mongoose.Types.ObjectId("51bb793aca2ab77a3200000d")
+        const existeProducto = await Producto.findById(id);
+        //console.log(existeProducto);
+
+        if(!existeProducto){
+
+            throw `El producto con ID: ${id} no está registrado en la DB`;
+        }
+    }catch (err){
+        throw  `El producto con ID: ${id} no está registrado en la DB`;
     }
 }
 
@@ -58,5 +83,6 @@ module.exports = {
     esRoleValido,
     existeEmail,
     existeUsuarioId,
-    existeCategoria
+    existeCategoria,
+    existeProducto
 }

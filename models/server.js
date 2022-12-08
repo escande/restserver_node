@@ -11,9 +11,11 @@ class Server{
         // this.categoriasPath = '/api/categorias';
 
         this.paths = {
-            usuarios : '/api/usuarios',
             auth : '/api/auth',
-            categorias : '/api/categorias'
+            buscar: '/api/buscar',
+            categorias : '/api/categorias',
+            productos: '/api/productos',
+            usuarios : '/api/usuarios',
         };
 
         this.PORT = process.env.PORT || 3001;
@@ -50,9 +52,10 @@ class Server{
 
         //Es un middleware que usamos para cargar las rutas
         this.app.use(this.paths.auth, require('../routes/auth'));
-        this.app.use(this.paths.usuarios, require('../routes/usuarios'));
+        this.app.use(this.paths.buscar, require('../routes/buscar'));
         this.app.use(this.paths.categorias, require('../routes/categorias'));
-
+        this.app.use(this.paths.productos, require('../routes/productos'));
+        this.app.use(this.paths.usuarios, require('../routes/usuarios'));
     }
 
     listen(){

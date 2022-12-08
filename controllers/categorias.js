@@ -1,5 +1,5 @@
 const {response} = require('express');
-const Categoria = require('../models/categoria');
+const {Categoria} = require('../models/index');
 
 const obtenerCategoriaPorId = async (req, res = response) => {
 
@@ -7,10 +7,8 @@ const obtenerCategoriaPorId = async (req, res = response) => {
 
     try{
 
-        const categoria = await Categoria.findById(id);//.populate('usuario');
-
-        //const cat =  categoria.populate('usuario', ['nombre']);
-        //console.log(cat);
+        const categoria = await Categoria.findById(id)
+                                        .populate('usuario', ['nombre']);
 
         res.json({
             categoria
@@ -35,7 +33,11 @@ const obtenerCategorias = async (req, res = response) => {
         const [categorias, total ] = await Promise.all([
 
             //Categoria.find(query).populate('usuario', 'nombre').skip(Number(desde)).limit(Number(limite)),
-            Categoria.find(query).skip(Number(desde)).limit(Number(limite)),
+            Categoria.find(query)
+                    .populate('usuario', ['nombre'])
+                    .skip(Number(desde))
+                    .limit(Number(limite)),
+                    
             Categoria.count()
 
         ]);

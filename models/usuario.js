@@ -11,7 +11,7 @@
 const {Schema, model} = require('mongoose');
 
 
-const usuarioSchema = Schema({
+const UsuarioSchema = Schema({
     nombre: {
         type: String,
         require: [true, 'El nombre es obligatorio'],
@@ -46,7 +46,7 @@ const usuarioSchema = Schema({
 //Debe de ser una funcion normal, sino , no funcionará
 //Sobre-escribimos el metodo toJOSN
 //con esto quitamos lo que no queremos que aparezca y el resto es el usuarios sin los campos
-usuarioSchema.methods.toJSON = function(){
+UsuarioSchema.methods.toJSON = function(){
 
     const {__v, password, _id, ...usuario} = this.toObject();
 
@@ -57,4 +57,4 @@ usuarioSchema.methods.toJSON = function(){
 
 }
 
-module.exports = model('Usuarios', usuarioSchema);
+module.exports = model('usuario', UsuarioSchema);

@@ -1,7 +1,7 @@
 const { respose, request } = require('express');
 const bcrypt = require('bcryptjs');
 
-const Usuario = require('../models/usuario');
+const {Usuario} = require('../models/index');
 
 const getUsuarios = async (req = request, res = respose) => {
     //const {id} = req.params;
@@ -73,7 +73,7 @@ const putUsuarios = async (req = request, res = respose) => {
             resto.password = bcrypt.hashSync(password, salt);
         }
 
-        const usuario = await Usuario.findByIdAndUpdate(id, resto);
+        const usuario = await Usuario.findByIdAndUpdate(id, resto, {new : true});
 
         res.status(201).json({
             usuario,
@@ -102,7 +102,7 @@ const deleteUsuarios = async (req = request, res = respose) => {
     //Fisicamente lo borramos -  no recomendable
     //const usuario = await Usuario.findByIdAndRemove(id);
 
-    const usuario = await Usuario.findByIdAndUpdate(id, estado);
+    const usuario = await Usuario.findByIdAndUpdate(id, estado, {new : true});
 
     //Para saber que podemos poner el usuario en el req en el middleware anterior
     // const usuarioAuth = req.usuario;
