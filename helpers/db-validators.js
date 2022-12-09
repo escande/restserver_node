@@ -79,10 +79,26 @@ const existeProducto = async (id = '') => {
     }
 }
 
+const validarColeccionesPermitidas = (coleccion = '', colecciones = [] ) => {
+
+    const incluida = colecciones.includes(coleccion);
+
+    if(!incluida){
+
+        throw `La colección "${coleccion}" no es permitida, [${colecciones}]`;
+    }
+
+    //Se deberia de devolver en todas el true pero lo hacemos de forma implicita porque son Promesas
+    // y siempre al no devolver error se entiende que es ok la promesa
+    return true; 
+
+}
+
 module.exports = {
     esRoleValido,
     existeEmail,
     existeUsuarioId,
     existeCategoria,
-    existeProducto
+    existeProducto,
+    validarColeccionesPermitidas
 }
