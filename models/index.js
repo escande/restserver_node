@@ -4,11 +4,13 @@ const Producto = require('./producto');
 const Role = require('./role');
 const Server = require('./server');
 const Usuario = require('./usuario');
+const ChatMensajes = require('./chat-mensaje');
 
 
 
 module.exports = {
     Categoria,
+    ChatMensajes,
     Usuario,
     Server,
     Role,

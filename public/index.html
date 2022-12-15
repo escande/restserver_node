@@ -4,86 +4,59 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
     <title>Pagina de inicio</title>
 </head>
 <body>
+    <div class="container">
+        
+        <div class="row pt-4">
+            <div class="col-6 pt-4">
+                <h1>GOOGLE SIGN-IN</h1>
+
+                <hr/>
     
-    <h1>GOOGLE SIGN-IN</h1>
+                <div id="g_id_onload"
+                    data-client_id="844649065086-58g17btgbq4pjo0u46plja5sjeaa6q5i.apps.googleusercontent.com"
+                    data-auto_prompt="false"
+                    data-callback="googleSignin">
+                </div>
+                <div class="g_id_signin"
+                    data-type="standard"
+                    data-size="large"
+                    data-theme="outline"
+                    data-text="sign_in_with"
+                    data-shape="rectangular"
+                    data-logo_alignment="left">
+                </div>
 
-    <div id="g_id_onload"
-         data-client_id="844649065086-58g17btgbq4pjo0u46plja5sjeaa6q5i.apps.googleusercontent.com"
-         data-auto_prompt="false"
-         data-callback="handleCredentialResponse">
-      </div>
-      <div class="g_id_signin"
-         data-type="standard"
-         data-size="large"
-         data-theme="outline"
-         data-text="sign_in_with"
-         data-shape="rectangular"
-         data-logo_alignment="left">
-      </div>
+            </br>
+        
+                <button class="btn btn-secondary" onclick="signOut()">Sign-Out</button>
+            </div>
 
-    </br>
+        </div>
+    
+    
+        <div class="col-6 pt-4">
+            <h1>Login Manual</h1>
 
-      <button id="google-signout">Sign-Out</button>
+            <hr/>
 
-      <script>
-        function handleCredentialResponse(response) {
-           // decodeJwtResponse() is a custom function defined by you
-           // to decode the credential response.
-           //const responsePayload = decodeJwtResponse(response.credential);
+            <form class="form-group">
+                <input type="text" name="email" class="form-control mb-2" placeholder="email">
+                <input type="text" name="password" class="form-control mb-2" placeholder="password">
+            
+                <button  type="submit" class="btn btn-primary">Ingresar</button>
+            </form>
+        </div>
+    </div>
+    
+    
 
-           //Google token: ID_TOKEN
-
-           //console.log('ID_TOKEN', response.credential);
-
-           //Siempre hay que serialixar el body  el body
-           var raw = JSON.stringify({
-                "id_token": response.credential
-            });
-
-           const requestOptions = {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: raw,
-            redirect: 'follow'
-            };
-
-           fetch("http://localhost:3001/api/auth/google", requestOptions)
-            .then(resp => resp.json())
-            .then(result => {
-                console.log(result);
-                localStorage.setItem('email', result.usuario.email);
-            })
-            .catch(error => console.warn('error', error));
-      
-        //    console.log("ID: " + responsePayload.sub);
-        //    console.log('Full Name: ' + responsePayload.name);
-        //    console.log('Given Name: ' + responsePayload.given_name);
-        //    console.log('Family Name: ' + responsePayload.family_name);
-        //    console.log("Image URL: " + responsePayload.picture);
-        //    console.log("Email: " + responsePayload.email);
-
-        }
-
-        const button = document.querySelector('#google-signout');
-        button.onclick = () => {
-
-            console.log(google.accounts.id);
-            google.accounts.id.disableAutoSelect();
-            google.accounts.id.revoke(localStorage.getItem('email'), done =>{
-
-                localStorage.clear();
-                localStorage.reload;
-
-            });
-
-        }
-      </script>
-
+    <script src="./js/auth.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 </body>

@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const { dbConnection } = require('../database/config');
+const {createServer} = require('http'); //Extraemos el metodo de crear server
+const { socketController } = require('../sockets/socketController');
 
 class Server{
 
@@ -22,6 +24,8 @@ class Server{
 
         this.PORT = process.env.PORT || 3001;
         this.app = express();
+        this.server = createServer(this.app); //Usamos el metodo asi lo asignamos a nuestar app;
+        this.io = require('socket.io')(this.server);
 
         //Conectar DB
         this.conectarDb();
@@ -31,6 +35,9 @@ class Server{
 
         // Rutas de mi aplicación
         this.routes();
+
+        //Manejo del socket
+        this.socket();
     }
 
     async conectarDb(){
@@ -69,9 +76,16 @@ class Server{
         this.app.use(this.paths.uploads, require('../routes/uploads'));
     }
 
+    socket(){
+
+        this.io.on('connection', (socket)=> socketController(socket, this.io));
+
+    }
+
     listen(){
 
-        this.app.listen(this.PORT, console.log('Servidor iniciado en el puerto', this.PORT));
+        //Cambiamos app por server, ya que express no tiene sockets
+        this.server.listen(this.PORT, console.log('Servidor iniciado en el puerto', this.PORT));
 
         this.app.get('/', (req, res) => {
 

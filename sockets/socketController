@@ -1,0 +1,65 @@
+const { Socket } = require("socket.io");
+const {comprobarJWT} = require('../helpers/index');
+const { ChatMensajes } = require("../models");
+
+const chatMensajes = new ChatMensajes();
+
+//const socketController = (socket) => {
+//Solo por desarrollo creo un nuevo socket para tener toda la funcionalidad
+const socketController = async (socket = new Socket(), io)  => {
+    //La cabecera lleva el token
+    const token =  socket.handshake.headers['x-token'];
+    const usuario = await comprobarJWT(token);
+
+    if(!usuario){
+
+        return socket.disconnect();
+    }
+
+    //Agregar el usuario conectado
+    chatMensajes.conectarUsuario(usuario);
+
+    //Emitimos los usuarios a todos cuando se conecta alguien
+    io.emit('usuarios-activos', chatMensajes.usuariosArr);
+
+    //Emitimos el msg al usuario que se conecta
+    socket.emit('recibir-msg', chatMensajes.ultimos10);
+    console.log('Se ha conectado ', usuario.nombre);
+
+    //Esto no es util ya que el id es muy volatl
+    //socket.to(socket.id).emit();
+
+    //Conectar a una sala especial
+    socket.join(usuario.id)
+
+    //socket.emit('request', /* … */); // emit an event to the socket
+    //io.emit('broadcast', /* … */); // emit an event to all connected sockets
+    socket.on('disconnect', async () => {
+
+        console.log('Se ha desconectado', usuario.nombre);
+
+        chatMensajes.desconectarUsuarioId(usuario);
+        
+        io.emit('usuarios-activos', chatMensajes.usuariosArr);
+    });
+    socket.on('enviar-mensaje', ({uid, mensaje}) => {
+
+        if(uid){
+
+            socket.to(uid).emit('mensaje-privado', {de: usuario.nombre ,mensaje});
+
+        }else{
+
+            chatMensajes.enviarMensaje({uid: usuario.uid, nombre: usuario.nombre, mensaje})
+
+            io.emit('recibir-msg', chatMensajes.ultimos10);
+
+        }
+        
+    }); // listen to the event
+
+}
+
+module.exports = {
+    socketController,
+}
